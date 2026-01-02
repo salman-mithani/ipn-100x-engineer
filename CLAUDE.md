@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+Don't leave the repo
+
 ## Project Overview
 
 Restaurant Finder is a Next.js 14 application built for an AI-assisted coding workshop. It demonstrates finding restaurants near a user's location using mock data and mock geocoding. The project **intentionally contains dead code and incomplete features** as workshop exercises.
