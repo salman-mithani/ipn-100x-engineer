@@ -67,9 +67,10 @@ export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
         {/* Operating Hours */}
         <div className="mb-2">
           {restaurant.operatingHoursDisplay ? (
-            <p className="text-sm text-gray-600" title={restaurant.operatingHoursDisplay}>
-              🕒 <span className="line-clamp-1">{restaurant.operatingHoursDisplay}</span>
-            </p>
+            <div className="text-xs text-gray-600 flex gap-1">
+              <span className="flex-shrink-0">🕒</span>
+              <span className="break-words">{restaurant.operatingHoursDisplay}</span>
+            </div>
           ) : (
             <p className="text-sm text-gray-600">
               🕒 {restaurant.openingHours} - {restaurant.closingHours}
