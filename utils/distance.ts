@@ -54,10 +54,10 @@ export function formatDistance(distanceKm: number): string {
   return `${distanceKm.toFixed(1)} km`;
 }
 
-// Default coordinates for San Francisco (used when no location is provided)
+// Default coordinates for Houston (used when no location is provided)
 export const DEFAULT_COORDINATES = {
-  latitude: 37.7749,
-  longitude: -122.4194,
+  latitude: 29.7604,
+  longitude: -95.3698,
 };
 
 /**
@@ -69,29 +69,37 @@ export function mockGeocode(address: string): { latitude: number; longitude: num
 
   // Simple keyword matching for demo purposes
   const locationMap: Record<string, { latitude: number; longitude: number }> = {
+    // Houston areas
+    'houston': { latitude: 29.7604, longitude: -95.3698 },
+    'downtown': { latitude: 29.7589, longitude: -95.3677 },
+    'midtown': { latitude: 29.7425, longitude: -95.3889 },
+    'uptown': { latitude: 29.7508, longitude: -95.4617 },
+    'galleria': { latitude: 29.7389, longitude: -95.4619 },
+    'rice village': { latitude: 29.7181, longitude: -95.4212 },
+    'montrose': { latitude: 29.7396, longitude: -95.3929 },
+    'heights': { latitude: 29.7997, longitude: -95.4056 },
+    'memorial': { latitude: 29.7628, longitude: -95.5342 },
+    'bellaire': { latitude: 29.7058, longitude: -95.4672 },
+    'chinatown': { latitude: 29.7067, longitude: -95.5067 },
+    'hillcroft': { latitude: 29.7119, longitude: -95.5136 },
+    'westheimer': { latitude: 29.7386, longitude: -95.4617 },
+    // Houston zip codes
+    '77002': { latitude: 29.7589, longitude: -95.3677 },
+    '77004': { latitude: 29.7244, longitude: -95.3592 },
+    '77006': { latitude: 29.7425, longitude: -95.3889 },
+    '77019': { latitude: 29.7481, longitude: -95.4194 },
+    '77027': { latitude: 29.7508, longitude: -95.4617 },
+    '77036': { latitude: 29.7119, longitude: -95.5136 },
+    '77057': { latitude: 29.7389, longitude: -95.4619 },
+    '77063': { latitude: 29.7419, longitude: -95.5203 },
+    '77074': { latitude: 29.6964, longitude: -95.5294 },
+    '77081': { latitude: 29.7028, longitude: -95.4983 },
+    '77098': { latitude: 29.7344, longitude: -95.4161 },
+    '77099': { latitude: 29.6619, longitude: -95.6075 },
+    // San Francisco (legacy support)
     'san francisco': { latitude: 37.7749, longitude: -122.4194 },
-    'downtown': { latitude: 37.7879, longitude: -122.4074 },
-    'mission': { latitude: 37.7599, longitude: -122.4148 },
-    'soma': { latitude: 37.7785, longitude: -122.3950 },
-    'marina': { latitude: 37.8025, longitude: -122.4382 },
-    'castro': { latitude: 37.7609, longitude: -122.4350 },
-    'haight': { latitude: 37.7692, longitude: -122.4481 },
-    'north beach': { latitude: 37.8060, longitude: -122.4103 },
-    'chinatown': { latitude: 37.7941, longitude: -122.4078 },
-    'financial district': { latitude: 37.7946, longitude: -122.3999 },
     '94102': { latitude: 37.7813, longitude: -122.4167 },
     '94103': { latitude: 37.7726, longitude: -122.4119 },
-    '94104': { latitude: 37.7914, longitude: -122.4020 },
-    '94105': { latitude: 37.7894, longitude: -122.3953 },
-    '94107': { latitude: 37.7658, longitude: -122.3970 },
-    '94108': { latitude: 37.7920, longitude: -122.4080 },
-    '94109': { latitude: 37.7942, longitude: -122.4215 },
-    '94110': { latitude: 37.7486, longitude: -122.4153 },
-    '94117': { latitude: 37.7709, longitude: -122.4420 },
-    '94118': { latitude: 37.7822, longitude: -122.4617 },
-    '94122': { latitude: 37.7586, longitude: -122.4859 },
-    '94123': { latitude: 37.8008, longitude: -122.4358 },
-    '94133': { latitude: 37.8009, longitude: -122.4103 },
   };
 
   // Check for exact matches first
@@ -101,6 +109,6 @@ export function mockGeocode(address: string): { latitude: number; longitude: num
     }
   }
 
-  // Default to San Francisco city center if no match
+  // Default to Houston city center if no match
   return DEFAULT_COORDINATES;
 }

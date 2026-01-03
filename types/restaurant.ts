@@ -7,6 +7,7 @@ export interface Restaurant {
   priceRange: string;
   openingHours: string;
   closingHours: string;
+  operatingHoursDisplay?: string;
   latitude: number;
   longitude: number;
   phone: string;

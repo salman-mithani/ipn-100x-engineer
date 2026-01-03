@@ -64,10 +64,18 @@ export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
           📍 {restaurant.address}
         </p>
 
-        {/* TODO: Workshop Exercise 1 - Add opening hours display */}
-        {/* The data includes openingHours and closingHours fields */}
-        {/* Display them here with appropriate formatting */}
-        {/* Consider showing "Open Now" or "Closed" status */}
+        {/* Operating Hours */}
+        <div className="mb-2">
+          {restaurant.operatingHoursDisplay ? (
+            <p className="text-sm text-gray-600" title={restaurant.operatingHoursDisplay}>
+              🕒 <span className="line-clamp-1">{restaurant.operatingHoursDisplay}</span>
+            </p>
+          ) : (
+            <p className="text-sm text-gray-600">
+              🕒 {restaurant.openingHours} - {restaurant.closingHours}
+            </p>
+          )}
+        </div>
 
         <p className="text-sm text-gray-500 line-clamp-2">{restaurant.description}</p>
 
@@ -105,6 +113,18 @@ function getCuisineEmoji(cuisine: string): string {
     Brazilian: '🥩',
     Peruvian: '🐟',
     Spanish: '🥘',
+    'Andhra/Telugu': '🍛',
+    'Tamil/South Indian': '🍛',
+    'Modern South Indian': '🍛',
+    'Pakistani/South Indian': '🍛',
+    'Pakistani/Punjabi': '🍛',
+    'Karnataka/Udupi': '🍛',
+    'Indo-Pakistani': '🍛',
+    'Gujarati/South Indian': '🍛',
+    'North/South Indian': '🍛',
+    'Gujarati/Rajasthani': '🍛',
+    'South Indian': '🍛',
+    'Pakistani/Indian': '🍛',
   };
 
   return cuisineEmojis[cuisine] || '🍽️';
