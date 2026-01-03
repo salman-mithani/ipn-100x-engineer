@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import SearchForm from '@/components/SearchForm';
 import RestaurantCard from '@/components/RestaurantCard';
 import { Restaurant } from '@/types/restaurant';
@@ -41,10 +42,20 @@ export default function Home() {
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold text-gray-900">🍽️ Restaurant Finder</h1>
-          <p className="mt-1 text-sm text-gray-500">
-            Find the best restaurants near you
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">🍽️ Restaurant Finder</h1>
+              <p className="mt-1 text-sm text-gray-500">
+                Find the best restaurants near you
+              </p>
+            </div>
+            <Link
+              href="/blog"
+              className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors font-medium"
+            >
+              📝 Blog
+            </Link>
+          </div>
         </div>
       </header>
 
