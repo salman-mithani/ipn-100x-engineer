@@ -14,14 +14,10 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
 
-  // console.log('Home component rendered'); // Dead code - should be removed
-
   const handleSearch = async (location: string) => {
     setLoading(true);
     setError(null);
     setHasSearched(true);
-
-    console.log('Searching for restaurants near:', location); // Dead code - should be removed
 
     try {
       const response = await fetch(`/api/restaurants?address=${encodeURIComponent(location)}`);
@@ -32,7 +28,6 @@ export default function Home() {
       }
 
       setRestaurants(data.restaurants);
-      console.log('Found restaurants:', data.restaurants.length); // Dead code - should be removed
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
       setRestaurants([]);
