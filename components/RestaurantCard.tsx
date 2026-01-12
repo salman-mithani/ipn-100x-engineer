@@ -64,10 +64,27 @@ export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
           📍 {restaurant.address}
         </p>
 
-        {/* TODO: Workshop Exercise 1 - Add opening hours display */}
-        {/* The data includes openingHours and closingHours fields */}
-        {/* Display them here with appropriate formatting */}
-        {/* Consider showing "Open Now" or "Closed" status */}
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-sm">🕐</span>
+          {restaurant.operatingHours ? (
+            <span className="text-sm text-gray-600">{restaurant.operatingHours}</span>
+          ) : (
+            <span className="text-sm text-gray-600">
+              {formatTime(restaurant.openingHours)} - {formatTime(restaurant.closingHours)}
+            </span>
+          )}
+        </div>
+        <div className="mb-2">
+          {isOpenNow(restaurant.openingHours, restaurant.closingHours) ? (
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+              Open Now
+            </span>
+          ) : (
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
+              Closed
+            </span>
+          )}
+        </div>
 
         <p className="text-sm text-gray-500 line-clamp-2">{restaurant.description}</p>
 
@@ -82,6 +99,39 @@ export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
       </div>
     </div>
   );
+}
+
+// Helper function to format time from 24h to 12h format
+function formatTime(time: string): string {
+  const [hours, minutes] = time.split(':').map(Number);
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const hour12 = hours % 12 || 12;
+  return `${hour12}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+}
+
+// Helper function to check if restaurant is currently open
+function isOpenNow(openingHours: string, closingHours: string): boolean {
+  const now = new Date();
+  const currentHours = now.getHours();
+  const currentMinutes = now.getMinutes();
+  const currentTime = currentHours * 60 + currentMinutes;
+
+  const [openH, openM] = openingHours.split(':').map(Number);
+  const [closeH, closeM] = closingHours.split(':').map(Number);
+
+  const openTime = openH * 60 + openM;
+  let closeTime = closeH * 60 + closeM;
+
+  // Handle closing time past midnight (e.g., closes at 2:00 AM)
+  if (closeTime < openTime) {
+    // Restaurant closes after midnight
+    if (currentTime >= openTime || currentTime < closeTime) {
+      return true;
+    }
+    return false;
+  }
+
+  return currentTime >= openTime && currentTime < closeTime;
 }
 
 // Helper function to get cuisine emoji
@@ -105,6 +155,18 @@ function getCuisineEmoji(cuisine: string): string {
     Brazilian: '🥩',
     Peruvian: '🐟',
     Spanish: '🥘',
+    'Andhra/Telugu': '🍛',
+    'Tamil/South Indian': '🍛',
+    'Modern South Indian': '🍛',
+    'Pakistani/South Indian': '🍛',
+    'Pakistani/Punjabi': '🍛',
+    'South Indian': '🍛',
+    'Karnataka/Udupi': '🍛',
+    'Indo-Pakistani': '🍛',
+    'Gujarati/South Indian': '🍛',
+    'North/South Indian': '🍛',
+    'Gujarati/Rajasthani': '🍛',
+    'Pakistani/Indian': '🍛',
   };
 
   return cuisineEmojis[cuisine] || '🍽️';
