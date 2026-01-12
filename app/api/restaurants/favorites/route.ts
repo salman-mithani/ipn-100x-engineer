@@ -112,18 +112,3 @@ export async function DELETE(request: NextRequest) {
     );
   }
 }
-
-// Unused helper function
-function validateUserId(userId: string): boolean {
-  // Would validate user ID format
-  return userId.length > 0 && userId.length < 100;
-}
-
-// Another unused helper
-function formatFavoritesResponse(restaurantIds: string[]) {
-  return {
-    favorites: restaurantIds,
-    count: restaurantIds.length,
-    lastUpdated: new Date().toISOString(),
-  };
-}

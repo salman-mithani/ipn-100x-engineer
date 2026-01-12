@@ -53,31 +53,6 @@ export default function RestaurantMap({ restaurants, center, zoom = 13 }: Restau
     }
   }, [restaurants]);
 
-  const handleMarkerClick = (restaurant: Restaurant) => {
-    // This function is never called
-    console.log('Marker clicked:', restaurant.name);
-    alert(`You clicked on ${restaurant.name}`);
-  };
-
-  const calculateBounds = (restaurants: Restaurant[]) => {
-    // Unused function to calculate map bounds
-    if (restaurants.length === 0) return null;
-
-    let minLat = restaurants[0].latitude;
-    let maxLat = restaurants[0].latitude;
-    let minLng = restaurants[0].longitude;
-    let maxLng = restaurants[0].longitude;
-
-    restaurants.forEach((r) => {
-      minLat = Math.min(minLat, r.latitude);
-      maxLat = Math.max(maxLat, r.latitude);
-      minLng = Math.min(minLng, r.longitude);
-      maxLng = Math.max(maxLng, r.longitude);
-    });
-
-    return { minLat, maxLat, minLng, maxLng };
-  };
-
   return (
     <div className="relative">
       <div
@@ -104,27 +79,4 @@ export default function RestaurantMap({ restaurants, center, zoom = 13 }: Restau
       </div>
     </div>
   );
-}
-
-// Unused helper function
-function formatDistance(meters: number): string {
-  if (meters < 1000) {
-    return `${Math.round(meters)}m`;
-  }
-  return `${(meters / 1000).toFixed(1)}km`;
-}
-
-// Another unused function
-function getMapStyle() {
-  return [
-    {
-      featureType: 'poi.business',
-      stylers: [{ visibility: 'off' }],
-    },
-    {
-      featureType: 'transit',
-      elementType: 'labels.icon',
-      stylers: [{ visibility: 'off' }],
-    },
-  ];
 }
