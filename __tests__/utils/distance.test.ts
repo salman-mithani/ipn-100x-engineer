@@ -42,7 +42,15 @@ describe('Distance Utilities', () => {
   });
 
   describe('mockGeocode', () => {
-    it('returns coordinates for San Francisco', () => {
+    it('returns coordinates for Houston (default)', () => {
+      const result = mockGeocode('Houston');
+      expect(result).toEqual({
+        latitude: 29.7604,
+        longitude: -95.3698,
+      });
+    });
+
+    it('returns coordinates for San Francisco (legacy support)', () => {
       const result = mockGeocode('San Francisco');
       expect(result).toEqual({
         latitude: 37.7749,
@@ -50,17 +58,36 @@ describe('Distance Utilities', () => {
       });
     });
 
-    it('returns default coordinates for unknown locations', () => {
+    it('returns default Houston coordinates for unknown locations', () => {
       const result = mockGeocode('Unknown City XYZ');
       expect(result).toEqual({
-        latitude: 37.7749,
-        longitude: -122.4194,
+        latitude: 29.7604,
+        longitude: -95.3698,
       });
     });
 
-    // TODO: Add more tests
-    // - Test zip codes
-    // - Test neighborhood names
-    // - Test case insensitivity
+    it('returns coordinates for Houston zip codes', () => {
+      const result = mockGeocode('77036');
+      expect(result).toEqual({
+        latitude: 29.7119,
+        longitude: -95.5136,
+      });
+    });
+
+    it('returns coordinates for Houston neighborhoods', () => {
+      const result = mockGeocode('Hillcroft');
+      expect(result).toEqual({
+        latitude: 29.7119,
+        longitude: -95.5136,
+      });
+    });
+
+    it('is case insensitive', () => {
+      const result = mockGeocode('DOWNTOWN');
+      expect(result).toEqual({
+        latitude: 29.7589,
+        longitude: -95.3677,
+      });
+    });
   });
 });

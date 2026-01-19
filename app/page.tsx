@@ -1,40 +1,23 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import SearchForm from '@/components/SearchForm';
 import RestaurantCard from '@/components/RestaurantCard';
-import { Restaurant } from '@/types/restaurant';
-
-// TODO: Workshop Exercise 5 - Improve UI with better styling
-// Consider adding animations, better loading states, and responsive design improvements
+import RestaurantCardSkeleton from '@/components/RestaurantCardSkeleton';
+import ErrorBoundary from '@/components/ErrorBoundary';
+import { useRestaurants } from '@/hooks';
 
 export default function Home() {
-  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [hasSearched, setHasSearched] = useState(false);
+  const {
+    restaurants,
+    loading,
+    error,
+    hasSearched,
+    searchByLocation,
+  } = useRestaurants();
 
-  const handleSearch = async (location: string) => {
-    setLoading(true);
-    setError(null);
-    setHasSearched(true);
-
-    try {
-      const response = await fetch(`/api/restaurants?address=${encodeURIComponent(location)}`);
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to fetch restaurants');
-      }
-
-      setRestaurants(data.restaurants);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-      setRestaurants([]);
-    } finally {
-      setLoading(false);
-    }
+  const handleSearch = (location: string) => {
+    searchByLocation(location);
   };
 
   return (
@@ -67,11 +50,21 @@ export default function Home() {
         </section>
 
         {/* Results Section */}
-        <section>
+        <section aria-live="polite" aria-busy={loading}>
           {loading && (
-            <div className="flex justify-center items-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500"></div>
-              <span className="ml-3 text-gray-600">Finding restaurants...</span>
+            <div>
+              <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                Finding restaurants...
+              </h2>
+              <div
+                className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+                role="status"
+                aria-label="Loading restaurants"
+              >
+                {[...Array(6)].map((_, i) => (
+                  <RestaurantCardSkeleton key={i} />
+                ))}
+              </div>
             </div>
           )}
 
@@ -90,15 +83,15 @@ export default function Home() {
           {!loading && restaurants.length > 0 && (
             <div>
               <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                Found {restaurants.length} restaurants near you
+                Found {restaurants.length} restaurant{restaurants.length !== 1 ? 's' : ''} near you
               </h2>
-              {/* TODO: Workshop Exercise 1 - Add opening hours display */}
-              {/* Currently the opening hours are available in the data but not displayed */}
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {restaurants.map((restaurant) => (
-                  <RestaurantCard key={restaurant.id} restaurant={restaurant} />
-                ))}
-              </div>
+              <ErrorBoundary>
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  {restaurants.map((restaurant) => (
+                    <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+                  ))}
+                </div>
+              </ErrorBoundary>
             </div>
           )}
 

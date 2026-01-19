@@ -21,7 +21,12 @@ export default function SearchForm({ onSearch, isLoading }: SearchFormProps) {
   // Add a "Use my location" button that gets the user's current coordinates
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white rounded-lg shadow-md p-6"
+      role="search"
+      aria-label="Search for restaurants"
+    >
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1">
           <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
@@ -33,8 +38,10 @@ export default function SearchForm({ onSearch, isLoading }: SearchFormProps) {
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             placeholder="Enter address, city, or zip code..."
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all text-gray-900 bg-white placeholder-gray-400"
             disabled={isLoading}
+            aria-describedby="location-hint"
+            autoComplete="street-address"
           />
         </div>
         <div className="flex items-end">
@@ -42,13 +49,15 @@ export default function SearchForm({ onSearch, isLoading }: SearchFormProps) {
             type="submit"
             disabled={isLoading || !location.trim()}
             className="w-full sm:w-auto px-6 py-3 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            aria-label={isLoading ? 'Searching for restaurants' : 'Find restaurants near you'}
           >
             {isLoading ? 'Searching...' : 'Find Restaurants'}
           </button>
         </div>
       </div>
-      <p className="mt-3 text-sm text-gray-500">
-        💡 Tip: Try searching for &quot;Houston&quot;, &quot;Hillcroft&quot;, or a zip code like &quot;77036&quot;
+      <p id="location-hint" className="mt-3 text-sm text-gray-500">
+        <span aria-hidden="true">💡 </span>
+        Tip: Try searching for &quot;Houston&quot;, &quot;Hillcroft&quot;, or a zip code like &quot;77036&quot;
       </p>
     </form>
   );

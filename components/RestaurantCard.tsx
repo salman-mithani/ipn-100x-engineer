@@ -1,17 +1,25 @@
+'use client';
+
+import React, { memo } from 'react';
 import { Restaurant } from '@/types/restaurant';
 
 interface RestaurantCardProps {
   restaurant: Restaurant;
+  onViewDetails?: (restaurant: Restaurant) => void;
 }
 
-export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
+function RestaurantCard({ restaurant, onViewDetails }: RestaurantCardProps) {
   const renderStars = (rating: number) => {
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 >= 0.5;
     const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
 
     return (
-      <span className="text-yellow-400">
+      <span
+        className="text-yellow-400"
+        role="img"
+        aria-label={`Rating: ${rating.toFixed(1)} out of 5 stars`}
+      >
         {'★'.repeat(fullStars)}
         {hasHalfStar && '½'}
         {'☆'.repeat(emptyStars)}
@@ -34,19 +42,60 @@ export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
     }
   };
 
+  const getPriceLabel = (priceRange: string) => {
+    switch (priceRange) {
+      case '$':
+        return 'Budget-friendly';
+      case '$$':
+        return 'Moderate';
+      case '$$$':
+        return 'Expensive';
+      case '$$$$':
+        return 'Very expensive';
+      default:
+        return 'Price unknown';
+    }
+  };
+
+  const handleCall = () => {
+    window.location.href = `tel:${restaurant.phone}`;
+  };
+
+  const handleViewDetails = () => {
+    if (onViewDetails) {
+      onViewDetails(restaurant);
+    }
+  };
+
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+    <article
+      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow focus-within:ring-2 focus-within:ring-red-500"
+      aria-labelledby={`restaurant-${restaurant.id}-name`}
+    >
       {/* Placeholder image area */}
-      <div className="h-40 bg-gradient-to-r from-red-400 to-orange-400 flex items-center justify-center">
-        <span className="text-6xl">{getCuisineEmoji(restaurant.cuisine)}</span>
+      <div
+        className="h-40 bg-gradient-to-r from-red-400 to-orange-400 flex items-center justify-center"
+        role="img"
+        aria-label={`${restaurant.cuisine} cuisine`}
+      >
+        <span className="text-6xl" aria-hidden="true">
+          {getCuisineEmoji(restaurant.cuisine)}
+        </span>
       </div>
 
       <div className="p-4">
         <div className="flex justify-between items-start mb-2">
-          <h3 className="text-lg font-semibold text-gray-900 truncate flex-1">
+          <h3
+            id={`restaurant-${restaurant.id}-name`}
+            className="text-lg font-semibold text-gray-900 truncate flex-1"
+          >
             {restaurant.name}
           </h3>
-          <span className={`font-medium ml-2 ${getPriceColor(restaurant.priceRange)}`}>
+          <span
+            className={`font-medium ml-2 ${getPriceColor(restaurant.priceRange)}`}
+            aria-label={getPriceLabel(restaurant.priceRange)}
+            title={getPriceLabel(restaurant.priceRange)}
+          >
             {restaurant.priceRange}
           </span>
         </div>
@@ -55,23 +104,32 @@ export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
 
         <div className="flex items-center mb-2">
           {renderStars(restaurant.rating)}
-          <span className="ml-2 text-sm text-gray-600">{restaurant.rating.toFixed(1)}</span>
+          <span className="ml-2 text-sm text-gray-600" aria-hidden="true">
+            {restaurant.rating.toFixed(1)}
+          </span>
         </div>
 
         <p className="text-sm text-gray-600 mb-2 truncate" title={restaurant.address}>
-          📍 {restaurant.address}
+          <span aria-hidden="true">📍 </span>
+          <span className="sr-only">Address: </span>
+          {restaurant.address}
         </p>
 
         {/* Operating Hours */}
         <div className="mb-2">
           {restaurant.operatingHoursDisplay ? (
             <div className="text-xs text-gray-600 flex gap-1">
-              <span className="flex-shrink-0">🕒</span>
-              <span className="break-words">{restaurant.operatingHoursDisplay}</span>
+              <span className="flex-shrink-0" aria-hidden="true">🕒</span>
+              <span>
+                <span className="sr-only">Hours: </span>
+                {restaurant.operatingHoursDisplay}
+              </span>
             </div>
           ) : (
             <p className="text-sm text-gray-600">
-              🕒 {restaurant.openingHours} - {restaurant.closingHours}
+              <span aria-hidden="true">🕒 </span>
+              <span className="sr-only">Hours: </span>
+              {restaurant.openingHours} - {restaurant.closingHours}
             </p>
           )}
         </div>
@@ -79,15 +137,24 @@ export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
         <p className="text-sm text-gray-500 line-clamp-2">{restaurant.description}</p>
 
         <div className="mt-4 flex gap-2">
-          <button className="flex-1 px-3 py-2 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors">
+          <button
+            onClick={handleViewDetails}
+            className="flex-1 px-3 py-2 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            aria-label={`View details for ${restaurant.name}`}
+          >
             View Details
           </button>
-          <button className="px-3 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 transition-colors">
-            📞
+          <button
+            onClick={handleCall}
+            className="px-3 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+            aria-label={`Call ${restaurant.name} at ${restaurant.phone}`}
+            title={`Call ${restaurant.phone}`}
+          >
+            <span aria-hidden="true">📞</span>
           </button>
         </div>
       </div>
-    </div>
+    </article>
   );
 }
 
@@ -124,7 +191,11 @@ function getCuisineEmoji(cuisine: string): string {
     'Gujarati/Rajasthani': '🍛',
     'South Indian': '🍛',
     'Pakistani/Indian': '🍛',
+    'Tamil/Vegetarian': '🍛',
   };
 
   return cuisineEmojis[cuisine] || '🍽️';
 }
+
+// Memoize component to prevent unnecessary re-renders
+export default memo(RestaurantCard);
