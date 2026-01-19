@@ -17,9 +17,13 @@ npm run dev
 ## 📋 Features
 
 - **Location Search**: Enter an address, city, or zip code to find nearby restaurants
-- **Mock Data**: 25 restaurants in the San Francisco area
+- **Geolocation Support**: Use your current location to find nearby restaurants
+- **Interactive Map**: View restaurant locations on an embedded map
+- **Mock Data**: 20 restaurants in the Houston area
 - **Distance Calculation**: Restaurants sorted by proximity using the Haversine formula
+- **Restaurant Blog**: Blog posts about featured restaurants
 - **Responsive Design**: Works on desktop and mobile devices
+- **Accessibility**: WCAG-compliant with proper ARIA labels and keyboard navigation
 
 ## 🛠️ Tech Stack
 
@@ -35,24 +39,36 @@ npm run dev
 restaurant-finder/
 ├── app/
 │   ├── api/
-│   │   └── restaurants/
-│   │       ├── route.ts          # Main API endpoint
-│   │       └── favorites/
-│   │           └── route.ts      # Favorites endpoint (unused)
+│   │   ├── restaurants/
+│   │   │   └── route.ts          # Main restaurants API endpoint
+│   │   └── blogs/
+│   │       ├── route.ts          # Blogs list API
+│   │       └── [id]/route.ts     # Individual blog API
+│   ├── blog/
+│   │   ├── page.tsx              # Blog listing page
+│   │   └── [id]/page.tsx         # Individual blog page
 │   ├── globals.css
 │   ├── layout.tsx
-│   └── page.tsx
+│   └── page.tsx                  # Home page with search
 ├── components/
-│   ├── RestaurantCard.tsx
-│   ├── RestaurantMap.tsx         # Legacy component (unused)
-│   └── SearchForm.tsx
+│   ├── BlogCardSkeleton.tsx      # Loading skeleton for blogs
+│   ├── ErrorBoundary.tsx         # Error boundary component
+│   ├── RestaurantCard.tsx        # Restaurant card with accessibility
+│   ├── RestaurantCardSkeleton.tsx # Loading skeleton for restaurants
+│   ├── RestaurantMap.tsx         # Interactive map component
+│   └── SearchForm.tsx            # Search form with geolocation
+├── hooks/
+│   ├── index.ts                  # Hook exports
+│   ├── useBlogs.ts               # Blog data fetching hook
+│   └── useRestaurants.ts         # Restaurant data fetching hook
 ├── data/
-│   └── restaurants.json          # Mock restaurant data
+│   ├── restaurants.json          # Mock restaurant data (Houston)
+│   └── blogs.json                # Blog posts data
 ├── types/
-│   └── restaurant.ts
+│   ├── restaurant.ts             # Restaurant type definitions
+│   └── blog.ts                   # Blog type definitions
 ├── utils/
-│   ├── distance.ts               # Distance calculations
-│   └── helpers.ts                # Helper utilities (some unused)
+│   └── distance.ts               # Distance calculations & geocoding
 └── __tests__/
     ├── api/
     ├── components/
@@ -75,7 +91,7 @@ restaurant-finder/
 
 ## 🎯 Workshop Exercises
 
-TODO: Please ask your instructors for the document link.
+This project is designed for the "Becoming a 100x Dev" workshop. Workshop materials and exercises are provided by your instructors during the session.
 
 ## 🔧 Configuration
 
@@ -100,7 +116,7 @@ Find restaurants near a location.
 
 **Example:**
 ```bash
-curl "http://localhost:3000/api/restaurants?address=San%20Francisco"
+curl "http://localhost:3000/api/restaurants?address=Houston"
 ```
 
 **Response:**
@@ -109,24 +125,24 @@ curl "http://localhost:3000/api/restaurants?address=San%20Francisco"
   "restaurants": [
     {
       "id": "1",
-      "name": "Golden Dragon",
-      "address": "123 Main Street, San Francisco, CA 94102",
-      "cuisine": "Chinese",
-      "rating": 4.5,
+      "name": "Aga's Restaurant",
+      "address": "6815 Hillcroft St Houston TX 77081",
+      "cuisine": "Andhra/Telugu",
+      "rating": 4.3,
       "priceRange": "$$",
-      "openingHours": "11:00",
-      "closingHours": "22:00",
-      "latitude": 37.7849,
-      "longitude": -122.4094,
-      "phone": "(415) 555-0101",
-      "description": "Authentic Cantonese cuisine",
-      "distance": 0.5
+      "openingHours": "11:30",
+      "closingHours": "14:30",
+      "latitude": 29.745,
+      "longitude": -95.3367,
+      "phone": "(713) 981-7717",
+      "description": "Family Style Authentic Andhra Cuisine",
+      "distance": 2.5
     }
   ],
   "searchLocation": {
-    "latitude": 37.7749,
-    "longitude": -122.4194,
-    "address": "San Francisco"
+    "latitude": 29.7604,
+    "longitude": -95.3698,
+    "address": "Houston"
   }
 }
 ```

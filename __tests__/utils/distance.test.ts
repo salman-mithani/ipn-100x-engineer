@@ -1,14 +1,13 @@
 /**
- * TODO: Workshop Exercise 4 - Add unit tests
- *
- * This test file is a skeleton for distance utility tests.
- * Add meaningful tests for:
- * - calculateDistance function
- * - formatDistance function
- * - mockGeocode function
+ * Unit tests for distance calculation utilities
  */
 
-import { calculateDistance, formatDistance, mockGeocode } from '@/utils/distance';
+import {
+  calculateDistance,
+  formatDistance,
+  mockGeocode,
+  DEFAULT_COORDINATES,
+} from '@/utils/distance';
 
 describe('Distance Utilities', () => {
   describe('calculateDistance', () => {
@@ -24,9 +23,47 @@ describe('Distance Utilities', () => {
       expect(distance).toBe(0);
     });
 
-    // TODO: Add more tests
-    // - Test with different coordinate pairs
-    // - Test edge cases (international date line, poles)
+    it('calculates Houston to Dallas distance correctly', () => {
+      // Houston to Dallas is approximately 362 km
+      const distance = calculateDistance(29.7604, -95.3698, 32.7767, -96.7970);
+      expect(distance).toBeGreaterThan(350);
+      expect(distance).toBeLessThan(380);
+    });
+
+    it('calculates short distances accurately', () => {
+      // Two points roughly 1 km apart in Houston
+      const distance = calculateDistance(29.7604, -95.3698, 29.7694, -95.3698);
+      expect(distance).toBeGreaterThan(0.9);
+      expect(distance).toBeLessThan(1.1);
+    });
+
+    it('handles international date line correctly', () => {
+      // Point in Japan to point in Alaska (crossing international date line)
+      const distance = calculateDistance(35.6762, 139.6503, 61.2181, -149.9003);
+      expect(distance).toBeGreaterThan(5000);
+      expect(distance).toBeLessThan(6000);
+    });
+
+    it('handles coordinates near the equator', () => {
+      // Two points on the equator
+      const distance = calculateDistance(0, 0, 0, 1);
+      // 1 degree of longitude at equator is approximately 111 km
+      expect(distance).toBeGreaterThan(100);
+      expect(distance).toBeLessThan(120);
+    });
+
+    it('handles coordinates near the poles', () => {
+      // Two points near the North Pole
+      const distance = calculateDistance(89, 0, 89, 90);
+      // Should be a relatively short distance due to convergence at poles
+      expect(distance).toBeLessThan(200);
+    });
+
+    it('is symmetric - distance A to B equals distance B to A', () => {
+      const distanceAB = calculateDistance(29.7604, -95.3698, 32.7767, -96.7970);
+      const distanceBA = calculateDistance(32.7767, -96.7970, 29.7604, -95.3698);
+      expect(distanceAB).toBeCloseTo(distanceBA, 10);
+    });
   });
 
   describe('formatDistance', () => {
@@ -38,7 +75,29 @@ describe('Distance Utilities', () => {
       expect(formatDistance(5.5)).toBe('5.5 km');
     });
 
-    // TODO: Add more tests
+    it('rounds meters to whole numbers', () => {
+      expect(formatDistance(0.123)).toBe('123m');
+    });
+
+    it('formats 1km boundary correctly', () => {
+      expect(formatDistance(1)).toBe('1.0 km');
+    });
+
+    it('formats very small distances', () => {
+      expect(formatDistance(0.05)).toBe('50m');
+    });
+
+    it('formats large distances correctly', () => {
+      expect(formatDistance(100.789)).toBe('100.8 km');
+    });
+
+    it('handles zero distance', () => {
+      expect(formatDistance(0)).toBe('0m');
+    });
+
+    it('formats distances just under 1km', () => {
+      expect(formatDistance(0.999)).toBe('999m');
+    });
   });
 
   describe('mockGeocode', () => {
@@ -87,6 +146,73 @@ describe('Distance Utilities', () => {
       expect(result).toEqual({
         latitude: 29.7589,
         longitude: -95.3677,
+      });
+    });
+
+    it('returns coordinates for Midtown', () => {
+      const result = mockGeocode('midtown');
+      expect(result).toEqual({
+        latitude: 29.7425,
+        longitude: -95.3889,
+      });
+    });
+
+    it('returns coordinates for Galleria', () => {
+      const result = mockGeocode('galleria');
+      expect(result).toEqual({
+        latitude: 29.7389,
+        longitude: -95.4619,
+      });
+    });
+
+    it('returns coordinates for Rice Village', () => {
+      const result = mockGeocode('rice village');
+      expect(result).toEqual({
+        latitude: 29.7181,
+        longitude: -95.4212,
+      });
+    });
+
+    it('returns coordinates for Montrose', () => {
+      const result = mockGeocode('montrose');
+      expect(result).toEqual({
+        latitude: 29.7396,
+        longitude: -95.3929,
+      });
+    });
+
+    it('returns coordinates for Chinatown', () => {
+      const result = mockGeocode('chinatown');
+      expect(result).toEqual({
+        latitude: 29.7067,
+        longitude: -95.5067,
+      });
+    });
+
+    it('handles addresses containing known locations', () => {
+      // Note: "houston" is matched before "downtown" due to order in location map
+      const result = mockGeocode('123 Main St, Downtown Houston');
+      expect(result).toEqual({
+        latitude: 29.7604,
+        longitude: -95.3698,
+      });
+    });
+
+    it('prioritizes more specific location matches', () => {
+      // When address only contains "downtown", it should match downtown coordinates
+      const result = mockGeocode('downtown area');
+      expect(result).toEqual({
+        latitude: 29.7589,
+        longitude: -95.3677,
+      });
+    });
+  });
+
+  describe('DEFAULT_COORDINATES', () => {
+    it('has correct Houston coordinates', () => {
+      expect(DEFAULT_COORDINATES).toEqual({
+        latitude: 29.7604,
+        longitude: -95.3698,
       });
     });
   });

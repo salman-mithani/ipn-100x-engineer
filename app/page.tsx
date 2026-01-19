@@ -4,6 +4,7 @@ import Link from 'next/link';
 import SearchForm from '@/components/SearchForm';
 import RestaurantCard from '@/components/RestaurantCard';
 import RestaurantCardSkeleton from '@/components/RestaurantCardSkeleton';
+import RestaurantMap from '@/components/RestaurantMap';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { useRestaurants } from '@/hooks';
 
@@ -14,10 +15,15 @@ export default function Home() {
     error,
     hasSearched,
     searchByLocation,
+    searchByCoordinates,
   } = useRestaurants();
 
   const handleSearch = (location: string) => {
     searchByLocation(location);
+  };
+
+  const handleSearchByCoordinates = (lat: number, lng: number) => {
+    searchByCoordinates(lat, lng);
   };
 
   return (
@@ -46,7 +52,7 @@ export default function Home() {
       <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {/* Search Section */}
         <section className="mb-8">
-          <SearchForm onSearch={handleSearch} isLoading={loading} />
+          <SearchForm onSearch={handleSearch} onSearchByCoordinates={handleSearchByCoordinates} isLoading={loading} />
         </section>
 
         {/* Results Section */}
@@ -85,6 +91,15 @@ export default function Home() {
               <h2 className="text-xl font-semibold text-gray-800 mb-4">
                 Found {restaurants.length} restaurant{restaurants.length !== 1 ? 's' : ''} near you
               </h2>
+
+              {/* Map View */}
+              <div className="mb-6">
+                <ErrorBoundary>
+                  <RestaurantMap restaurants={restaurants} />
+                </ErrorBoundary>
+              </div>
+
+              {/* Restaurant Cards */}
               <ErrorBoundary>
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {restaurants.map((restaurant) => (
@@ -107,9 +122,6 @@ export default function Home() {
             </div>
           )}
         </section>
-
-        {/* TODO: Workshop Exercise 3 - Integrate real maps API */}
-        {/* Add a map view showing restaurant locations */}
       </div>
 
       {/* Footer */}

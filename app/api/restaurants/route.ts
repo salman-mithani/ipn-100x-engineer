@@ -77,9 +77,8 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST method - currently not used but kept for future expansion
+// POST method - supports filtering by cuisine, rating, and price range
 export async function POST(request: NextRequest) {
-  // TODO: Workshop Exercise 4 - Add unit tests for this endpoint
   try {
     const body = await request.json();
     const { latitude, longitude, filters } = body;
